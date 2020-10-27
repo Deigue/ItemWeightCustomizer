@@ -1,6 +1,6 @@
 {
   "Nickname": "ItemWeightCustomizer",
-  "HideByDefault": false,
-  "OneLineDescription": "",
-  "LongDescription": ""
+  "HideByDefault": true,
+  "OneLineDescription": "Allows for setting custom weight values for different type of items.",
+  "LongDescription": "Currently supports override for BOOK records."
 }
