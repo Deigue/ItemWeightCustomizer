@@ -67,7 +67,9 @@ namespace ItemWeightCustomizer
             }
 
             // ***** PRINT CONFIG SETTINGS ***** //
-            SynthesisLog($"All books (BOOK) will have their weight set to {config.getBookWeight()}");
+            float customBookWeight = config.getBookWeight();
+            SynthesisLog($"Item Weight Configuration:", true);
+            SynthesisLog($"All books (BOOK) will have their weights set to {customBookWeight}");
 
 
             // START WORK ...
@@ -76,9 +78,11 @@ namespace ItemWeightCustomizer
             // ***** BOOKS ***** //
             foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
             {   
-                if(book.Weight != config.getBookWeight())
+                if(book.Weight != customBookWeight)
                 {
-                    //var modifiedBook = book.
+                    var modifiedBook = book.DeepCopy();
+                    modifiedBook.Weight = customBookWeight;
+                    state.PatchMod.Books.Add(modifiedBook);
                 }
             }
         }
