@@ -5,6 +5,7 @@ using Mutagen.Bethesda;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace ItemWeightCustomizer
 {
@@ -44,16 +45,17 @@ namespace ItemWeightCustomizer
             {
                 var errorMessage = "Cannot find config.json for Custom Weights.";
                 var fileException = new FileNotFoundException(errorMessage, configFilePath);
-                SynthesisLog(errorMessage, true);
                 throw fileException;
             }
 
+            JObject config = JObject.Parse(File.ReadAllText(configFilePath));
 
             Console.WriteLine("Running Item Weight Customizer ...");
 
-            foreach (var item in state.LoadOrder.PriorityOrder)
-            {
-                // iterate some items.
+            // ***** BOOKS ***** //
+            foreach (var item in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
+            {   
+
             }
         }
     }
