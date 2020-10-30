@@ -47,7 +47,7 @@ namespace ItemWeightCustomizer
 
             if (!File.Exists(configFilePath))
             {
-                
+
                 errorMessage = "Cannot find config.json for Custom Weights.";
                 SynthesisLog(errorMessage);
                 throw new FileNotFoundException(errorMessage, configFilePath);
@@ -63,26 +63,29 @@ namespace ItemWeightCustomizer
             {
                 errorMessage = "Failed to Parse config.json, please review the format.";
                 SynthesisLog(errorMessage);
-                throw new JsonSerializationException(errorMessage , jsonException);
+                throw new JsonSerializationException(errorMessage, jsonException);
             }
 
             // ***** PRINT CONFIG SETTINGS ***** //
             float customBookWeight = config.getBookWeight();
             SynthesisLog($"Item Weight Configuration:", true);
-            SynthesisLog($"All books (BOOK) will have their weights set to {customBookWeight}");
+            if (customBookWeight >= 0) SynthesisLog($"All books (BOOK) will have their weights set to {customBookWeight}");
 
 
             // START WORK ...
             Console.WriteLine("Running Item Weight Customizer ...");
 
             // ***** BOOKS ***** //
-            foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
-            {   
-                if(book.Weight != customBookWeight)
+            if (customBookWeight >= 0)
+            { 
+                foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
                 {
-                    var modifiedBook = book.DeepCopy();
-                    modifiedBook.Weight = customBookWeight;
-                    state.PatchMod.Books.Add(modifiedBook);
+                    if (book.Weight != customBookWeight)
+                    {
+                        var modifiedBook = book.DeepCopy();
+                        modifiedBook.Weight = customBookWeight;
+                        state.PatchMod.Books.Add(modifiedBook);
+                    }
                 }
             }
         }
