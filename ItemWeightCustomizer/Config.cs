@@ -20,7 +20,7 @@ namespace ItemWeightCustomizer
         internal class WeightSettings
         {
             [JsonProperty("books")]
-            public float books { get; set; }
+            public float books { get; set; } = -1;
         }
 
         public float getBookWeight()
