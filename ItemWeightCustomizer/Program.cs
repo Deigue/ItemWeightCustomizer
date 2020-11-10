@@ -66,25 +66,57 @@ namespace ItemWeightCustomizer
                 throw new JsonSerializationException(errorMessage, jsonException);
             }
 
-            // ***** PRINT CONFIG SETTINGS ***** //
-            float customBookWeight = config.getBookWeight();
-            SynthesisLog($"Item Weight Configuration:", true);
-            if (customBookWeight >= 0) SynthesisLog($"All books (BOOK) will have their weights set to {customBookWeight}");
+            var bookWeight = config.getBookWeight();
+            var ingredientWeight = config.getIngredientWeight();
+            var scrollWeight = config.getScrollWeight();
 
+            // ***** PRINT CONFIG SETTINGS ***** //
+            SynthesisLog($"Item Weight Configuration:", true);
+            if (bookWeight >= 0) SynthesisLog($"All books (BOOK) will have their weights set to {bookWeight}");
+            if (ingredientWeight >= 0) SynthesisLog($"All ingredients (INGR) will have their weights set to {ingredientWeight}");
+            if (scrollWeight >= 0) SynthesisLog($"All scrolls (SCRL) will have their weights set to {scrollWeight}");
 
             // START WORK ...
             Console.WriteLine("Running Item Weight Customizer ...");
 
             // ***** BOOKS ***** //
-            if (customBookWeight >= 0)
+            if (bookWeight >= 0)
             { 
                 foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
                 {
-                    if (book.Weight != customBookWeight)
+                    if (book.Weight != bookWeight)
                     {
                         var modifiedBook = book.DeepCopy();
-                        modifiedBook.Weight = customBookWeight;
+                        modifiedBook.Weight = bookWeight;
                         state.PatchMod.Books.Add(modifiedBook);
+                    }
+                }
+            }
+
+            // ***** INGREDIENTS ***** //
+            if (ingredientWeight >= 0)
+            {
+                foreach (IIngredientGetter ingredient in state.LoadOrder.PriorityOrder.WinningOverrides<IIngredientGetter>())
+                {
+                    if (ingredient.Weight != ingredientWeight)
+                    {
+                        var modifiedIngredient = ingredient.DeepCopy();
+                        modifiedIngredient.Weight = ingredientWeight;
+                        state.PatchMod.Ingredients.Add(modifiedIngredient);
+                    }
+                }
+            }
+
+            // ***** SCROLLS ***** //
+            if (scrollWeight >= 0)
+            {
+                foreach (IScrollGetter scroll in state.LoadOrder.PriorityOrder.WinningOverrides<IScrollGetter>())
+                {
+                    if (scroll.Weight != scrollWeight)
+                    {
+                        var modifiedScroll = scroll.DeepCopy();
+                        modifiedScroll.Weight = scrollWeight;
+                        state.PatchMod.Scrolls.Add(modifiedScroll);
                     }
                 }
             }

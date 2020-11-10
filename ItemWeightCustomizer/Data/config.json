@@ -1,5 +1,7 @@
 {
-    "weightSettings":{
-        
+    "weightSettings": {
+        "books" : 0,
+        "ingredients": 0,
+        "scrolls": 0
     }
 }
