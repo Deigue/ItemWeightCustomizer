@@ -1,7 +1,8 @@
 {
     "weightSettings": {
-        "books" : 0,
+        "books": 0,
         "ingredients": 0,
-        "scrolls": 0
+        "scrolls": 0,
+        "soulgems" : 0
     }
 }

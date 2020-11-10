@@ -69,12 +69,14 @@ namespace ItemWeightCustomizer
             var bookWeight = config.getBookWeight();
             var ingredientWeight = config.getIngredientWeight();
             var scrollWeight = config.getScrollWeight();
+            var soulGemWeight = config.getSoulGemWeight();
 
             // ***** PRINT CONFIG SETTINGS ***** //
             SynthesisLog($"Item Weight Configuration:", true);
             if (bookWeight >= 0) SynthesisLog($"All books (BOOK) will have their weights set to {bookWeight}");
             if (ingredientWeight >= 0) SynthesisLog($"All ingredients (INGR) will have their weights set to {ingredientWeight}");
             if (scrollWeight >= 0) SynthesisLog($"All scrolls (SCRL) will have their weights set to {scrollWeight}");
+            if (soulGemWeight >= 0) SynthesisLog($"All soul gems (SLGM) will have their weights set to {soulGemWeight}");
 
             // START WORK ...
             Console.WriteLine("Running Item Weight Customizer ...");
@@ -117,6 +119,20 @@ namespace ItemWeightCustomizer
                         var modifiedScroll = scroll.DeepCopy();
                         modifiedScroll.Weight = scrollWeight;
                         state.PatchMod.Scrolls.Add(modifiedScroll);
+                    }
+                }
+            }
+
+            // ***** SOUL GEMS ***** //
+            if (soulGemWeight >= 0)
+            {
+                foreach (ISoulGemGetter soulGem in state.LoadOrder.PriorityOrder.WinningOverrides<ISoulGemGetter>())
+                {
+                    if (soulGem.Weight != soulGemWeight)
+                    {
+                        var modifiedSoulGem = soulGem.DeepCopy();
+                        modifiedSoulGem.Weight = soulGemWeight;
+                        state.PatchMod.SoulGems.Add(modifiedSoulGem);
                     }
                 }
             }

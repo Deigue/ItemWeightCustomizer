@@ -28,7 +28,8 @@ namespace ItemWeightCustomizer
             [JsonProperty("scrolls")]
             public float scrolls { get; set; } = -1;
 
-
+            [JsonProperty("soulgems")]
+            public float soulgems { get; set; } = -1;
 
         }
 
@@ -46,5 +47,11 @@ namespace ItemWeightCustomizer
         {
             return _weightSettings.scrolls;
         }
+
+        public float getSoulGemWeight()
+        {
+            return _weightSettings.soulgems;
+        }
+
     }
 }
