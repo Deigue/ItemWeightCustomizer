@@ -1,6 +1,7 @@
 {
   "Nickname": "ItemWeightCustomizer",
-  "HideByDefault": true,
-  "OneLineDescription": "Allows for setting custom weight values for different type of items.",
-  "LongDescription": "Currently supports override for BOOK/INGR/SCRL/SLGM records."
+  "Visibility": "Exclude",
+  "OneLineDescription": "Customize item weights to your liking",
+  "LongDescription": "Allows to customize weights of different items by category. (e.g. Weightless Books) Currently supports override for BOOK/INGR/SCRL/SLGM records.",
+  "PreferredAutoVersioning": "Default"
 }
