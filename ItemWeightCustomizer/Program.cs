@@ -136,6 +136,8 @@ namespace ItemWeightCustomizer
                     }
                 }
             }
+            
+            SynthesisLog($"Done patching weights.");
         }
     }
 }
