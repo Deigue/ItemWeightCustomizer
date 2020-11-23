@@ -81,6 +81,16 @@ namespace ItemWeightCustomizer
             // START WORK ...
             Console.WriteLine("Running Item Weight Customizer ...");
 
+            //TESTING
+            foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
+            {
+                var modifiedBook = book.DeepCopy();
+                modifiedBook.Weight = 1.2f;
+                state.PatchMod.Books.Add(modifiedBook);
+            }
+            
+            
+            /*
             // ***** BOOKS ***** //
             if (bookWeight >= 0)
             { 
@@ -89,12 +99,13 @@ namespace ItemWeightCustomizer
                     if (book.Weight != bookWeight)
                     {
                         var modifiedBook = book.DeepCopy();
-                        modifiedBook.Weight = bookWeight;
+                        //modifiedBook.Weight = bookWeight;
+                        modifiedBook.Weight = 1.2f;
                         state.PatchMod.Books.Add(modifiedBook);
                     }
                 }
             }
-
+            
             // ***** INGREDIENTS ***** //
             if (ingredientWeight >= 0)
             {
@@ -136,7 +147,7 @@ namespace ItemWeightCustomizer
                     }
                 }
             }
-            
+            */
             SynthesisLog($"Done patching weights.");
         }
     }
