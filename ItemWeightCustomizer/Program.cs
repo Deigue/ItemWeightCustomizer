@@ -7,6 +7,7 @@ using Mutagen.Bethesda.Skyrim;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Wabbajack.Common;
 
 namespace ItemWeightCustomizer
 {
@@ -94,8 +95,26 @@ namespace ItemWeightCustomizer
             // ***** BOOKS ***** //
             if (bookWeight >= 0)
             { 
-                foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
+                foreach (var ctx in state.LoadOrder.PriorityOrder.Book().WinningContextOverrides(state.LinkCache))
                 {
+                    var book = ctx.Record;
+                    if (book.EditorID?.StartsWith("Book1CheapBriefHistoryoftheEmpire") ?? false)
+                    {
+                        
+                    }
+                    // {
+                    //     var link = new FormLink<IBookGetter>(book.FormKey);
+                    //     var enumerableBooks = link.ResolveAll(state.LinkCache);
+                    //     enumerableBooks.Do(enumBk => SynthesisLog($"{enumBk.EditorID} - {enumBk.FormKey} - {enumBk.Name}"));
+                    //     Console.WriteLine($"done");
+                    // }
+                    // {
+                    //     var link = new FormLink<IBookGetter>(book.FormKey);
+                    //     var enumerableBooks = link.ResolveAllContexts<ISkyrimMod,IBook>(state.LoadOrder.ToImmutableLinkCache());
+                    //     enumerableBooks.Do(bookCtx => SynthesisLog($"{bookCtx.ModKey} - {bookCtx.Record.FormKey} - {bookCtx.Record.EditorID}"));
+                    //     Console.WriteLine($"done");
+                    // }
+                    
                     if (book.Weight != bookWeight)
                     {
                         var modifiedBook = book.DeepCopy();
