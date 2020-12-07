@@ -81,17 +81,12 @@ namespace ItemWeightCustomizer
 
             // START WORK ...
             Console.WriteLine("Running Item Weight Customizer ...");
-
-            //TESTING
-            foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
-            {
-                var modifiedBook = book.DeepCopy();
-                modifiedBook.Weight = 1.2f;
-                state.PatchMod.Books.Add(modifiedBook);
-            }
+            
+            // TESTING
+            state.LoadOrder.PriorityOrder.Do(listing => SynthesisLog($"{listing.ModKey}"));
+            //return;
             
             
-            /*
             // ***** BOOKS ***** //
             if (bookWeight >= 0)
             { 
@@ -100,7 +95,7 @@ namespace ItemWeightCustomizer
                     var book = ctx.Record;
                     if (book.EditorID?.StartsWith("Book1CheapBriefHistoryoftheEmpire") ?? false)
                     {
-                        
+                        Console.WriteLine($"{ctx.ModKey} -> {book.FormKey} - {book.EditorID} - {book.Name}");
                     }
                     // {
                     //     var link = new FormLink<IBookGetter>(book.FormKey);
@@ -125,6 +120,7 @@ namespace ItemWeightCustomizer
                 }
             }
             
+            /*
             // ***** INGREDIENTS ***** //
             if (ingredientWeight >= 0)
             {
