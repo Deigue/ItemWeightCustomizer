@@ -7,19 +7,17 @@ namespace ItemWeightCustomizer
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
-        
-        [JsonProperty("types")]
-        public HashSet<string> Types { get; set; }
-        
-        [JsonProperty("editorIds")]
-        public HashSet<string> EditorIds { get; set; }
-        
+
+        [JsonProperty("types")] public HashSet<string> Types { get; set; } = new HashSet<string>();
+
+        [JsonProperty("editorIds")] public HashSet<string> EditorIds { get; set; } = new HashSet<string>();
+
+        [JsonProperty("weight")] public float Weight { get; set; } = -1;
+
         [JsonConstructor]
-        public WeightCategory(string name, HashSet<string> types, HashSet<string> editorIds)
+        public WeightCategory(string name)
         {
             Name = name;
-            Types = types;
-            EditorIds = editorIds;
         }
     }
 }

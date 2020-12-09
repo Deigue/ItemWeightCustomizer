@@ -10,14 +10,14 @@ namespace ItemWeightCustomizer
         [JsonProperty("weightSettings")]
         public WeightSettings Weights { get; set; }
         
-        [JsonProperty("categorization")]
-        public HashSet<WeightCategory> Categorizations { get; set; }
+        [JsonProperty("categories")]
+        public HashSet<WeightCategory> Categories { get; set; }
 
         [JsonConstructor]
-        private Config(WeightSettings weights, HashSet<WeightCategory> categorizations)
+        private Config(WeightSettings weights, HashSet<WeightCategory> categories)
         {
             Weights = weights;
-            Categorizations = categorizations;
+            Categories = categories;
         }
     }
 }

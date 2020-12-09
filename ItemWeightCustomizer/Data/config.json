@@ -4,9 +4,10 @@
     "ingredients": 0,
     "scrolls": 0.1,
     "soulgems": 0,
-    "armors": 0.5
+    "armors": -1,
+    "weapons": -1
   },
-  "categorizations": [
+  "categories": [
     {
       "name" : "tools",
       "types": [
@@ -19,8 +20,10 @@
         "DLC2RR03NordPickaxe",
         "DLC2dunKolbjornRalisPickaxe",
         "dunVolunruudPickaxe",
-        "dunHaltedStreamPoachersAxe"
-      ]
+        "dunHaltedStreamPoachersAxe",
+        "dunHaltedStreamPoachersAxeREPLICA"
+      ],
+      "weight": 0
     }
   ]
 }

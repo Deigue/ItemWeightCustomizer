@@ -3,12 +3,15 @@ using Mutagen.Bethesda;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using System.IO;
+using System.Linq;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace ItemWeightCustomizer
 {
     public static class Program
     {
+        private static Config Config { get; set; } = null!;
 
         public static int Main(string[] args)
         {
@@ -38,9 +41,19 @@ namespace ItemWeightCustomizer
             if (special) Console.WriteLine();
         }
 
-        // TODO : Get appropriate weight from sections, and fall-back to simplistic weight values.
-        // private static float GetWeigh
-        
+        private static float? FindWeightCategory(string key, string? editorId)
+        {
+            if (editorId is null) return null;
+            WeightCategory? category = Config.Categories.FirstOrDefault(x => x.Types.Contains(key));
+            if (category != null && category.EditorIds.Contains(editorId))
+            {
+                SynthesisLog($"{editorId} matches the \"{category.Name}\" category, using weight {category.Weight}");
+                return category.Weight;
+            }
+
+            return null;
+        }
+
         private static void RunPatch(SynthesisState<ISkyrimMod, ISkyrimModGetter> state)
         {
             string configFilePath = Path.Combine(state.ExtraSettingsDataPath, "config.json");
@@ -53,11 +66,9 @@ namespace ItemWeightCustomizer
                 throw new FileNotFoundException(errorMessage, configFilePath);
             }
 
-            Config config;
-
             try
             {
-                config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configFilePath));
+                Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configFilePath));
             }
             catch (JsonSerializationException jsonException)
             {
@@ -66,12 +77,13 @@ namespace ItemWeightCustomizer
                 throw new JsonSerializationException(errorMessage, jsonException);
             }
 
-            var weights = config.Weights;
+            var weights = Config.Weights;
             var bookWeight = weights.Books;
             var ingredientWeight = weights.Ingredients;
             var scrollWeight = weights.Scrolls;
             var soulGemWeight = weights.Soulgems;
             var armorWeight = weights.Armors;
+            var weaponWeight = weights.Weapons;
 
             // ***** PRINT CONFIG SETTINGS ***** //
             SynthesisLog("Item Weight Configuration:", true);
@@ -85,16 +97,16 @@ namespace ItemWeightCustomizer
 
             // START WORK ...
             SynthesisLog("Running Item Weight Customizer ...", true);
-            
+
             // ***** BOOKS ***** //
             if (bookWeight >= 0)
             {
                 foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
                 {
-                    
+                    var newWeight = FindWeightCategory("books", book.EditorID) ?? bookWeight;
                     if (Math.Abs(book.Weight - bookWeight) < float.Epsilon) continue;
                     var modifiedBook = book.DeepCopy();
-                    modifiedBook.Weight = bookWeight;
+                    modifiedBook.Weight = newWeight;
                     state.PatchMod.Books.Add(modifiedBook);
                 }
             }
@@ -141,11 +153,23 @@ namespace ItemWeightCustomizer
             {
                 foreach (IArmorGetter armor in state.LoadOrder.PriorityOrder.WinningOverrides<IArmorGetter>())
                 {
+                    var newWeight = FindWeightCategory("armors", armor.EditorID) ?? bookWeight;
                     if (Math.Abs(armor.Weight - armorWeight) < float.Epsilon) continue;
                     var modifiedArmor = armor.DeepCopy();
                     modifiedArmor.Weight = armorWeight;
                     state.PatchMod.Armors.Add(modifiedArmor);
                 }
+            }
+
+            // ***** WEAPONS ***** //
+            foreach (IWeaponGetter weapon in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>())
+            {
+                var newWeight = FindWeightCategory("weapons", weapon.EditorID) ?? weaponWeight;
+                if (newWeight < 0) continue;
+                if (weapon.BasicStats != null && Math.Abs(weapon.BasicStats.Weight - newWeight) < float.Epsilon) continue;
+                var modifiedWeapon = weapon.DeepCopy();
+                modifiedWeapon.BasicStats!.Weight = newWeight;
+                state.PatchMod.Weapons.Add(modifiedWeapon);
             }
 
             SynthesisLog("Done patching weights!", true);
