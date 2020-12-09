@@ -88,6 +88,12 @@ namespace ItemWeightCustomizer
             var weaponWeight = weights.Weapons;
             var foodWeight = weights.Foods;
             var potionWeight = weights.Potions;
+            var ingotWeight = weights.Ingots;
+            var gemWeight = weights.Gems;
+            var animalPartWeight = weights.AnimalParts;
+            var animalHideWeight = weights.AnimalHides;
+            var clutterWeight = weights.Clutter;
+            var miscWeight = weights.MiscItems;
 
             // ***** PRINT CONFIG SETTINGS ***** //
             SynthesisLog("Item Weight Configuration:", true);
@@ -101,6 +107,13 @@ namespace ItemWeightCustomizer
             if (weaponWeight >= 0) SynthesisLog($"WEAPONS will have their weights set to {weaponWeight}");
             if (foodWeight >= 0) SynthesisLog($"FOODS will have their weights set to {foodWeight}");
             if (potionWeight >= 0) SynthesisLog($"POTIONS will have their weights set to {potionWeight}");
+            if (ingotWeight >= 0) SynthesisLog($"INGOTS will have their weights set to {ingotWeight}");
+            if (gemWeight >= 0) SynthesisLog($"GEMS will have their weights set to {gemWeight}");
+            if (animalPartWeight >= 0) SynthesisLog($"ANIMAL PARTS will have their weights set to {animalPartWeight}");
+            if (animalHideWeight >= 0) SynthesisLog($"ANIMAL HIDES will have their weights set to {animalHideWeight}");
+            if (clutterWeight >= 0) SynthesisLog($"CLUTTER will have their weights set to {clutterWeight}");
+            if (miscWeight >= 0) SynthesisLog($"MISCELLANEOUS ITEMS will have their weights set to {miscWeight}");
+
             Config.Categories.Where(c => c.Weight >= 0).ForEach(c =>
                 SynthesisLog($"\"{c.Name}\" category matches will have their weights set to {c.Weight}"));
 
@@ -208,6 +221,7 @@ namespace ItemWeightCustomizer
                     {
                         newWeight = FindWeightCategory("potions", ingestible.EditorID) ?? potionWeight;
                     }
+
                     if (newWeight < 0) continue;
                     if (Math.Abs(ingestible.Weight - newWeight) < float.Epsilon) continue;
                     var modifiedIngestible = ingestible.DeepCopy();
@@ -216,6 +230,51 @@ namespace ItemWeightCustomizer
                 }
             }
 
+            // ***** MISCELLANEOUS ITEMS ***** //
+            if (ingotWeight >= 0 || ActionableCategoryExists("ingots") ||
+                gemWeight >= 0 || ActionableCategoryExists("gems") ||
+                animalPartWeight >= 0 || ActionableCategoryExists("animalParts") ||
+                animalHideWeight >= 0 || ActionableCategoryExists("animalHides") ||
+                clutterWeight >= 0 || ActionableCategoryExists("clutter") ||
+                miscWeight >= 0 || ActionableCategoryExists("miscItems"))
+            {
+                foreach (IMiscItemGetter item in state.LoadOrder.PriorityOrder
+                    .WinningOverrides<IMiscItemGetter>())
+                {
+                    float newWeight = -1;
+                    if (item.Keywords?.Any(link => link.FormKey == VendorItemOreIngot) ?? false)
+                    {
+                        newWeight = FindWeightCategory("ingots", item.EditorID) ?? ingotWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemGem) ?? false)
+                    {
+                        newWeight = FindWeightCategory("gems", item.EditorID) ?? gemWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemAnimalPart) ?? false)
+                    {
+                        newWeight = FindWeightCategory("animalParts", item.EditorID) ?? animalPartWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemAnimalHide) ?? false)
+                    {
+                        newWeight = FindWeightCategory("animalHides", item.EditorID) ?? animalHideWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemClutter) ?? false)
+                    {
+                        newWeight = FindWeightCategory("clutter", item.EditorID) ?? clutterWeight;
+                    }
+                    else
+                    {
+                        newWeight = FindWeightCategory("miscItems", item.EditorID) ?? miscWeight;
+                    }
+
+                    if (newWeight < 0) continue;
+                    if (Math.Abs(item.Weight - newWeight) < float.Epsilon) continue;
+                    var modifiedItem = item.DeepCopy();
+                    modifiedItem.Weight = newWeight;
+                    state.PatchMod.MiscItems.Add(modifiedItem);
+                }
+            }
+            
             SynthesisLog("Done patching weights!", true);
         }
     }
