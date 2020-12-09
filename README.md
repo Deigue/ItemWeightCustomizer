@@ -12,7 +12,10 @@ depending on record/item types (Armor,Weapons,Books,Potions etc.)
 The patcher will use a `config.json` file in order to determine what weights need to be set for different types of items/records.
 
 - weightSettings: Contains all the different weight values that can be set for different types of records.
-    - books: Weight to be set for BOOK records.
+    - books: Weight to be set for Books.
+    - ingredients: Weight to be set for Ingredients.
+    - scrolls: Weight to set for Scrolls.
+    - soulgems: Weight to set for Soul Gems.
 - exception: TBD
 - flags: TBD
 

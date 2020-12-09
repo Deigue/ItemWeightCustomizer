@@ -1,56 +1,52 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ItemWeightCustomizer
 {
     public class Config
     {
         [JsonProperty("weightSettings")]
-        private WeightSettings _weightSettings { get; set; }
+        private WeightSettings Weights { get; set; }
 
         [JsonConstructor]
-        private Config(WeightSettings weightSettings)
+        private Config(WeightSettings weights)
         {
-            _weightSettings = weightSettings;
+            Weights = weights;
         }
 
         internal class WeightSettings
         {
             [JsonProperty("books")]
-            public float books { get; set; } = -1;
+            public float Books { get; set; } = -1;
 
             [JsonProperty("ingredients")]
-            public float ingredients { get; set; } = -1;
+            public float Ingredients { get; set; } = -1;
 
             [JsonProperty("scrolls")]
-            public float scrolls { get; set; } = -1;
+            public float Scrolls { get; set; } = -1;
 
             [JsonProperty("soulgems")]
-            public float soulgems { get; set; } = -1;
+            public float Soulgems { get; set; } = -1;
 
         }
 
-        public float getBookWeight()
+        public float GetBookWeight()
         {
-            return _weightSettings.books;
+            return Weights.Books;
         }
 
-        public float getIngredientWeight()
+        public float GetIngredientWeight()
         {
-            return _weightSettings.ingredients;
+            return Weights.Ingredients;
         }
 
-        public float getScrollWeight()
+        public float GetScrollWeight()
         {
-            return _weightSettings.scrolls;
+            return Weights.Scrolls;
         }
 
-        public float getSoulGemWeight()
+        public float GetSoulGemWeight()
         {
-            return _weightSettings.soulgems;
+            return Weights.Soulgems;
         }
 
     }
