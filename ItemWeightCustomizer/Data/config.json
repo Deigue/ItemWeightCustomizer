@@ -5,7 +5,9 @@
     "scrolls": 0.1,
     "soulgems": 0,
     "armors": -1,
-    "weapons": -1
+    "weapons": -1,
+    "foods": 0,
+    "potions": 0
   },
   "categories": [
     {

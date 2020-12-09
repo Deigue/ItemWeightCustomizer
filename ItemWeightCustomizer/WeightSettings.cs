@@ -10,5 +10,7 @@ namespace ItemWeightCustomizer
         [JsonProperty("soulgems")] public float Soulgems { get; set; } = -1;
         [JsonProperty("armors")] public float Armors { get; set; } = -1;
         [JsonProperty("weapons")] public float Weapons { get; set; } = -1;
+        [JsonProperty("foods")] public float Foods { get; set; } = -1;
+        [JsonProperty("potions")] public float Potions { get; set; } = -1;
     }
 }
