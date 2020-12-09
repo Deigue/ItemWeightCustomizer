@@ -34,8 +34,8 @@ The patcher will use a `config.json` file in order to determine what weights nee
 ---
 
 ## Change Log
-> Released an early version that supports setting Custom Book Weight.
-> Added Armours and Weapons weight configurability.
-> Added custom category support based on Editor Ids for all the existing record types.
-> Added Foods and Potions weight configurability.
-> Added several variation of Miscellaneous Items.
+- Released an early version that supports setting Custom Book Weight.
+- Added Armours and Weapons weight configurability.
+- Added custom category support based on Editor Ids for all the existing record types.
+- Added Foods and Potions weight configurability.
+- Added several variation of Miscellaneous Items.
