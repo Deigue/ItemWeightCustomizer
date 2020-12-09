@@ -9,6 +9,8 @@ namespace ItemWeightCustomizer
 {
     public static class Program
     {
+        private static SynthesisState<ISkyrimMod, ISkyrimModGetter> State { get; set; } = null!;
+
         public static int Main(string[] args)
         {
             return SynthesisPipeline.Instance.Patch<ISkyrimMod, ISkyrimModGetter>(
@@ -18,7 +20,6 @@ namespace ItemWeightCustomizer
                 {
                     ActionsForEmptyArgs = new RunDefaultPatcher
                     {
-
                         IdentifyingModKey = "ItemWeightCustomizer.esp",
                         TargetRelease = GameRelease.SkyrimSE
                     }
@@ -33,18 +34,32 @@ namespace ItemWeightCustomizer
                 Console.WriteLine();
                 Console.Write(">>> ");
             }
+
             Console.WriteLine(message);
             if (special) Console.WriteLine();
         }
 
+        private static void SimpleWeightOverride<T>(float newWeight) where T: class, IBookGetter
+        {
+            // ***** BOOKS ***** //
+            if (newWeight < 0) return;
+            foreach (T book in State.LoadOrder.PriorityOrder.WinningOverrides<T>())
+            {
+                if (Math.Abs(book.Weight - newWeight) < float.Epsilon) continue;
+                var modifiedBook = book.DeepCopy();
+                modifiedBook.Weight = newWeight;
+                State.PatchMod.Books.Add(modifiedBook);
+            }
+        }
+
         private static void RunPatch(SynthesisState<ISkyrimMod, ISkyrimModGetter> state)
         {
+            State = state;
             string configFilePath = Path.Combine(state.ExtraSettingsDataPath, "config.json");
             string errorMessage;
 
             if (!File.Exists(configFilePath))
             {
-
                 errorMessage = "Cannot find config.json for Custom Weights.";
                 SynthesisLog(errorMessage);
                 throw new FileNotFoundException(errorMessage, configFilePath);
@@ -63,37 +78,44 @@ namespace ItemWeightCustomizer
                 throw new JsonSerializationException(errorMessage, jsonException);
             }
 
-            var bookWeight = config.GetBookWeight();
-            var ingredientWeight = config.GetIngredientWeight();
-            var scrollWeight = config.GetScrollWeight();
-            var soulGemWeight = config.GetSoulGemWeight();
+            var weights = config.Weights;
+            var bookWeight = weights.Books;
+            var ingredientWeight = weights.Ingredients;
+            var scrollWeight = weights.Scrolls;
+            var soulGemWeight = weights.Soulgems;
+            var armorWeight = weights.Armors;
 
             // ***** PRINT CONFIG SETTINGS ***** //
             SynthesisLog("Item Weight Configuration:", true);
-            if (bookWeight >= 0) SynthesisLog($"All books (BOOK) will have their weights set to {bookWeight}");
-            if (ingredientWeight >= 0) SynthesisLog($"All ingredients (INGR) will have their weights set to {ingredientWeight}");
-            if (scrollWeight >= 0) SynthesisLog($"All scrolls (SCRL) will have their weights set to {scrollWeight}");
-            if (soulGemWeight >= 0) SynthesisLog($"All soul gems (SLGM) will have their weights set to {soulGemWeight}");
+            if (bookWeight >= 0) SynthesisLog($"All Books will have their weights set to {bookWeight}");
+            if (ingredientWeight >= 0)
+                SynthesisLog($"All Ingredients will have their weights set to {ingredientWeight}");
+            if (scrollWeight >= 0) SynthesisLog($"All Scrolls will have their weights set to {scrollWeight}");
+            if (soulGemWeight >= 0)
+                SynthesisLog($"All Soul Gems will have their weights set to {soulGemWeight}");
+            if (armorWeight >= 0) SynthesisLog($"All Armours will have their weights set to {armorWeight}");
 
             // START WORK ...
             SynthesisLog("Running Item Weight Customizer ...", true);
 
+            SimpleWeightOverride<IBookGetter>(bookWeight);
             // ***** BOOKS ***** //
-            if (bookWeight >= 0)
-            { 
-                foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
-                {
-                    if (Math.Abs(book.Weight - bookWeight) < float.Epsilon) continue;
-                    var modifiedBook = book.DeepCopy();
-                    modifiedBook.Weight = bookWeight;
-                    state.PatchMod.Books.Add(modifiedBook);
-                }
-            }
+            // if (bookWeight >= 0)
+            // {
+            //     foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
+            //     {
+            //         if (Math.Abs(book.Weight - bookWeight) < float.Epsilon) continue;
+            //         var modifiedBook = book.DeepCopy();
+            //         modifiedBook.Weight = bookWeight;
+            //         state.PatchMod.Books.Add(modifiedBook);
+            //     }
+            // }
 
             // ***** INGREDIENTS ***** //
             if (ingredientWeight >= 0)
             {
-                foreach (IIngredientGetter ingredient in state.LoadOrder.PriorityOrder.WinningOverrides<IIngredientGetter>())
+                foreach (IIngredientGetter ingredient in state.LoadOrder.PriorityOrder
+                    .WinningOverrides<IIngredientGetter>())
                 {
                     if (Math.Abs(ingredient.Weight - ingredientWeight) < float.Epsilon) continue;
                     var modifiedIngredient = ingredient.DeepCopy();
@@ -125,8 +147,18 @@ namespace ItemWeightCustomizer
                     state.PatchMod.SoulGems.Add(modifiedSoulGem);
                 }
             }
-            
-            SynthesisLog($"Done patching weights.");
+
+            // ***** ARMOURS ***** //
+            if (armorWeight >= 0)
+            {
+                foreach (IArmorGetter armor in state.LoadOrder.PriorityOrder.WinningOverrides<IArmorGetter>())
+                {
+                    if (Math.Abs(armor.Weight - armorWeight) < float.Epsilon) continue;
+                    
+                }
+            }
+
+            SynthesisLog("Done patching weights!", true);
         }
     }
 }
