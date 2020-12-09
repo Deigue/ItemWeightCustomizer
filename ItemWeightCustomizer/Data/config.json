@@ -2,12 +2,18 @@
   "weightSettings": {
     "books": 0,
     "ingredients": 0,
-    "scrolls": 0.1,
+    "scrolls": 0,
     "soulgems": 0,
     "armors": -1,
     "weapons": -1,
     "foods": 0,
-    "potions": 0
+    "potions": 0,
+    "ingots": 0,
+    "gems": 0,
+    "animalParts": 0,
+    "animalHides": 0,
+    "clutter": 0,
+    "miscItems": 0
   },
   "categories": [
     {
