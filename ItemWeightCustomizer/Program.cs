@@ -95,20 +95,11 @@ namespace ItemWeightCustomizer
                     var book = ctx.Record;
                     if (book.EditorID?.StartsWith("Book1CheapBriefHistoryoftheEmpire") ?? false)
                     {
-                        Console.WriteLine($"{ctx.ModKey} -> {book.FormKey} - {book.EditorID} - {book.Name}");
+                        var link = new FormLink<IBookGetter>(book.FormKey);
+                        var enumerableBooks = link.ResolveAllContexts<ISkyrimMod,IBook>(state.LoadOrder.ToImmutableLinkCache());
+                        enumerableBooks.Do(bookCtx => SynthesisLog($"{bookCtx.ModKey} - {bookCtx.Record.FormKey} - {bookCtx.Record.EditorID}"));
+                        //Console.WriteLine($"done");
                     }
-                    // {
-                    //     var link = new FormLink<IBookGetter>(book.FormKey);
-                    //     var enumerableBooks = link.ResolveAll(state.LinkCache);
-                    //     enumerableBooks.Do(enumBk => SynthesisLog($"{enumBk.EditorID} - {enumBk.FormKey} - {enumBk.Name}"));
-                    //     Console.WriteLine($"done");
-                    // }
-                    // {
-                    //     var link = new FormLink<IBookGetter>(book.FormKey);
-                    //     var enumerableBooks = link.ResolveAllContexts<ISkyrimMod,IBook>(state.LoadOrder.ToImmutableLinkCache());
-                    //     enumerableBooks.Do(bookCtx => SynthesisLog($"{bookCtx.ModKey} - {bookCtx.Record.FormKey} - {bookCtx.Record.EditorID}"));
-                    //     Console.WriteLine($"done");
-                    // }
                     
                     if (book.Weight != bookWeight)
                     {
