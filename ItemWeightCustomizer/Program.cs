@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Noggog;
+using static Mutagen.Bethesda.FormKeys.SkyrimSE.Skyrim.Keyword;
 
 namespace ItemWeightCustomizer
 {
@@ -50,9 +51,9 @@ namespace ItemWeightCustomizer
             return category.Weight;
         }
 
-        private static bool CategoryTypeExists(string type)
+        private static bool ActionableCategoryExists(string type)
         {
-            return Config.Categories.Any(c => c.Types.Contains(type));
+            return Config.Categories.Any(c => c.Types.Contains(type) && c.Weight >= 0);
         }
 
         private static void RunPatch(SynthesisState<ISkyrimMod, ISkyrimModGetter> state)
@@ -85,6 +86,14 @@ namespace ItemWeightCustomizer
             var soulGemWeight = weights.Soulgems;
             var armorWeight = weights.Armors;
             var weaponWeight = weights.Weapons;
+            var foodWeight = weights.Foods;
+            var potionWeight = weights.Potions;
+            var ingotWeight = weights.Ingots;
+            var gemWeight = weights.Gems;
+            var animalPartWeight = weights.AnimalParts;
+            var animalHideWeight = weights.AnimalHides;
+            var clutterWeight = weights.Clutter;
+            var miscWeight = weights.MiscItems;
 
             // ***** PRINT CONFIG SETTINGS ***** //
             SynthesisLog("Item Weight Configuration:", true);
@@ -96,6 +105,15 @@ namespace ItemWeightCustomizer
                 SynthesisLog($"SOUL GEMS will have their weights set to {soulGemWeight}");
             if (armorWeight >= 0) SynthesisLog($"ARMOURS will have their weights set to {armorWeight}");
             if (weaponWeight >= 0) SynthesisLog($"WEAPONS will have their weights set to {weaponWeight}");
+            if (foodWeight >= 0) SynthesisLog($"FOODS will have their weights set to {foodWeight}");
+            if (potionWeight >= 0) SynthesisLog($"POTIONS will have their weights set to {potionWeight}");
+            if (ingotWeight >= 0) SynthesisLog($"INGOTS will have their weights set to {ingotWeight}");
+            if (gemWeight >= 0) SynthesisLog($"GEMS will have their weights set to {gemWeight}");
+            if (animalPartWeight >= 0) SynthesisLog($"ANIMAL PARTS will have their weights set to {animalPartWeight}");
+            if (animalHideWeight >= 0) SynthesisLog($"ANIMAL HIDES will have their weights set to {animalHideWeight}");
+            if (clutterWeight >= 0) SynthesisLog($"CLUTTER will have their weights set to {clutterWeight}");
+            if (miscWeight >= 0) SynthesisLog($"MISCELLANEOUS ITEMS will have their weights set to {miscWeight}");
+
             Config.Categories.Where(c => c.Weight >= 0).ForEach(c =>
                 SynthesisLog($"\"{c.Name}\" category matches will have their weights set to {c.Weight}"));
 
@@ -103,7 +121,7 @@ namespace ItemWeightCustomizer
             SynthesisLog("Running Item Weight Customizer ...", true);
 
             // ***** BOOKS ***** //
-            if (bookWeight >= 0 || CategoryTypeExists("books"))
+            if (bookWeight >= 0 || ActionableCategoryExists("books"))
             {
                 foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
                 {
@@ -117,7 +135,7 @@ namespace ItemWeightCustomizer
             }
 
             // ***** INGREDIENTS ***** //
-            if (ingredientWeight >= 0 || CategoryTypeExists("ingredients"))
+            if (ingredientWeight >= 0 || ActionableCategoryExists("ingredients"))
             {
                 foreach (IIngredientGetter ingredient in state.LoadOrder.PriorityOrder
                     .WinningOverrides<IIngredientGetter>())
@@ -132,7 +150,7 @@ namespace ItemWeightCustomizer
             }
 
             // ***** SCROLLS ***** //
-            if (scrollWeight >= 0 || CategoryTypeExists("scrolls"))
+            if (scrollWeight >= 0 || ActionableCategoryExists("scrolls"))
             {
                 foreach (IScrollGetter scroll in state.LoadOrder.PriorityOrder.WinningOverrides<IScrollGetter>())
                 {
@@ -146,7 +164,7 @@ namespace ItemWeightCustomizer
             }
 
             // ***** SOUL GEMS ***** //
-            if (soulGemWeight >= 0 || CategoryTypeExists("soulgems"))
+            if (soulGemWeight >= 0 || ActionableCategoryExists("soulgems"))
             {
                 foreach (ISoulGemGetter soulGem in state.LoadOrder.PriorityOrder.WinningOverrides<ISoulGemGetter>())
                 {
@@ -160,7 +178,7 @@ namespace ItemWeightCustomizer
             }
 
             // ***** ARMOURS ***** //
-            if (armorWeight >= 0 || CategoryTypeExists("armors"))
+            if (armorWeight >= 0 || ActionableCategoryExists("armors"))
             {
                 foreach (IArmorGetter armor in state.LoadOrder.PriorityOrder.WinningOverrides<IArmorGetter>())
                 {
@@ -173,7 +191,7 @@ namespace ItemWeightCustomizer
             }
 
             // ***** WEAPONS ***** //
-            if (weaponWeight >= 0 || CategoryTypeExists("weapons"))
+            if (weaponWeight >= 0 || ActionableCategoryExists("weapons"))
             {
                 foreach (IWeaponGetter weapon in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>())
                 {
@@ -187,6 +205,76 @@ namespace ItemWeightCustomizer
                 }
             }
 
+            // ***** FOODS & POTIONS ***** //
+            if (foodWeight >= 0 || potionWeight >= 0 || ActionableCategoryExists("foods") ||
+                ActionableCategoryExists("potions"))
+            {
+                foreach (IIngestibleGetter ingestible in state.LoadOrder.PriorityOrder
+                    .WinningOverrides<IIngestibleGetter>())
+                {
+                    float newWeight = -1;
+                    if (ingestible.Keywords?.Any(link => link.FormKey == VendorItemFood) ?? false)
+                    {
+                        newWeight = FindWeightCategory("foods", ingestible.EditorID) ?? foodWeight;
+                    }
+                    else
+                    {
+                        newWeight = FindWeightCategory("potions", ingestible.EditorID) ?? potionWeight;
+                    }
+
+                    if (newWeight < 0) continue;
+                    if (Math.Abs(ingestible.Weight - newWeight) < float.Epsilon) continue;
+                    var modifiedIngestible = ingestible.DeepCopy();
+                    modifiedIngestible.Weight = newWeight;
+                    state.PatchMod.Ingestibles.Add(modifiedIngestible);
+                }
+            }
+
+            // ***** MISCELLANEOUS ITEMS ***** //
+            if (ingotWeight >= 0 || ActionableCategoryExists("ingots") ||
+                gemWeight >= 0 || ActionableCategoryExists("gems") ||
+                animalPartWeight >= 0 || ActionableCategoryExists("animalParts") ||
+                animalHideWeight >= 0 || ActionableCategoryExists("animalHides") ||
+                clutterWeight >= 0 || ActionableCategoryExists("clutter") ||
+                miscWeight >= 0 || ActionableCategoryExists("miscItems"))
+            {
+                foreach (IMiscItemGetter item in state.LoadOrder.PriorityOrder
+                    .WinningOverrides<IMiscItemGetter>())
+                {
+                    float newWeight = -1;
+                    if (item.Keywords?.Any(link => link.FormKey == VendorItemOreIngot) ?? false)
+                    {
+                        newWeight = FindWeightCategory("ingots", item.EditorID) ?? ingotWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemGem) ?? false)
+                    {
+                        newWeight = FindWeightCategory("gems", item.EditorID) ?? gemWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemAnimalPart) ?? false)
+                    {
+                        newWeight = FindWeightCategory("animalParts", item.EditorID) ?? animalPartWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemAnimalHide) ?? false)
+                    {
+                        newWeight = FindWeightCategory("animalHides", item.EditorID) ?? animalHideWeight;
+                    }
+                    else if (item.Keywords?.Any(link => link.FormKey == VendorItemClutter) ?? false)
+                    {
+                        newWeight = FindWeightCategory("clutter", item.EditorID) ?? clutterWeight;
+                    }
+                    else
+                    {
+                        newWeight = FindWeightCategory("miscItems", item.EditorID) ?? miscWeight;
+                    }
+
+                    if (newWeight < 0) continue;
+                    if (Math.Abs(item.Weight - newWeight) < float.Epsilon) continue;
+                    var modifiedItem = item.DeepCopy();
+                    modifiedItem.Weight = newWeight;
+                    state.PatchMod.MiscItems.Add(modifiedItem);
+                }
+            }
+            
             SynthesisLog("Done patching weights!", true);
         }
     }
