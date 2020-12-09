@@ -1,9 +1,26 @@
 {
-    "weightSettings": {
-        "books": 0,
-        "ingredients": 0,
-        "scrolls": 0.1,
-        "soulgems" : 0,
-        "armors": 0.5
+  "weightSettings": {
+    "books": 0,
+    "ingredients": 0,
+    "scrolls": 0.1,
+    "soulgems": 0,
+    "armors": 0.5
+  },
+  "categorizations": [
+    {
+      "name" : "tools",
+      "types": [
+        "weapons"
+      ],
+      "editorIds": [
+        "weapPickaxe",
+        "Axe01",
+        "DLC2AncientNordPickaxe",
+        "DLC2RR03NordPickaxe",
+        "DLC2dunKolbjornRalisPickaxe",
+        "dunVolunruudPickaxe",
+        "dunHaltedStreamPoachersAxe"
+      ]
     }
+  ]
 }

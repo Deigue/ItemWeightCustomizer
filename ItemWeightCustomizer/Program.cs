@@ -9,7 +9,6 @@ namespace ItemWeightCustomizer
 {
     public static class Program
     {
-        private static SynthesisState<ISkyrimMod, ISkyrimModGetter> State { get; set; } = null!;
 
         public static int Main(string[] args)
         {
@@ -39,22 +38,11 @@ namespace ItemWeightCustomizer
             if (special) Console.WriteLine();
         }
 
-        private static void SimpleWeightOverride<T>(float newWeight) where T: class, IBookGetter
-        {
-            // ***** BOOKS ***** //
-            if (newWeight < 0) return;
-            foreach (T book in State.LoadOrder.PriorityOrder.WinningOverrides<T>())
-            {
-                if (Math.Abs(book.Weight - newWeight) < float.Epsilon) continue;
-                var modifiedBook = book.DeepCopy();
-                modifiedBook.Weight = newWeight;
-                State.PatchMod.Books.Add(modifiedBook);
-            }
-        }
-
+        // TODO : Get appropriate weight from sections, and fall-back to simplistic weight values.
+        // private static float GetWeigh
+        
         private static void RunPatch(SynthesisState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            State = state;
             string configFilePath = Path.Combine(state.ExtraSettingsDataPath, "config.json");
             string errorMessage;
 
@@ -97,19 +85,19 @@ namespace ItemWeightCustomizer
 
             // START WORK ...
             SynthesisLog("Running Item Weight Customizer ...", true);
-
-            SimpleWeightOverride<IBookGetter>(bookWeight);
+            
             // ***** BOOKS ***** //
-            // if (bookWeight >= 0)
-            // {
-            //     foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
-            //     {
-            //         if (Math.Abs(book.Weight - bookWeight) < float.Epsilon) continue;
-            //         var modifiedBook = book.DeepCopy();
-            //         modifiedBook.Weight = bookWeight;
-            //         state.PatchMod.Books.Add(modifiedBook);
-            //     }
-            // }
+            if (bookWeight >= 0)
+            {
+                foreach (IBookGetter book in state.LoadOrder.PriorityOrder.WinningOverrides<IBookGetter>())
+                {
+                    
+                    if (Math.Abs(book.Weight - bookWeight) < float.Epsilon) continue;
+                    var modifiedBook = book.DeepCopy();
+                    modifiedBook.Weight = bookWeight;
+                    state.PatchMod.Books.Add(modifiedBook);
+                }
+            }
 
             // ***** INGREDIENTS ***** //
             if (ingredientWeight >= 0)
@@ -154,7 +142,9 @@ namespace ItemWeightCustomizer
                 foreach (IArmorGetter armor in state.LoadOrder.PriorityOrder.WinningOverrides<IArmorGetter>())
                 {
                     if (Math.Abs(armor.Weight - armorWeight) < float.Epsilon) continue;
-                    
+                    var modifiedArmor = armor.DeepCopy();
+                    modifiedArmor.Weight = armorWeight;
+                    state.PatchMod.Armors.Add(modifiedArmor);
                 }
             }
 
