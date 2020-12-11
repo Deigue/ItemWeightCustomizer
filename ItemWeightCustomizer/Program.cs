@@ -199,9 +199,11 @@ namespace ItemWeightCustomizer
                     if (newWeight < 0) continue;
                     if (weapon.BasicStats != null &&
                         Math.Abs(weapon.BasicStats.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedWeapon = weapon.DeepCopy();
+
+                    var modifiedWeapon = state.PatchMod.Weapons.GetOrAddAsOverride(weapon);
+                    //var modifiedWeapon = weapon.DeepCopy();
                     modifiedWeapon.BasicStats!.Weight = newWeight;
-                    state.PatchMod.Weapons.Add(modifiedWeapon);
+                    //state.PatchMod.Weapons.Add(modifiedWeapon);
                 }
             }
 
