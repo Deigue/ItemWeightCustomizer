@@ -128,9 +128,8 @@ namespace ItemWeightCustomizer
                     var newWeight = FindWeightCategory("books", book.EditorID) ?? bookWeight;
                     if (newWeight < 0) continue;
                     if (Math.Abs(book.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedBook = book.DeepCopy();
+                    var modifiedBook = state.PatchMod.Books.GetOrAddAsOverride(book);
                     modifiedBook.Weight = newWeight;
-                    state.PatchMod.Books.Add(modifiedBook);
                 }
             }
 
@@ -143,9 +142,8 @@ namespace ItemWeightCustomizer
                     var newWeight = FindWeightCategory("ingredients", ingredient.EditorID) ?? ingredientWeight;
                     if (newWeight < 0) continue;
                     if (Math.Abs(ingredient.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedIngredient = ingredient.DeepCopy();
+                    var modifiedIngredient = state.PatchMod.Ingredients.GetOrAddAsOverride(ingredient);
                     modifiedIngredient.Weight = newWeight;
-                    state.PatchMod.Ingredients.Add(modifiedIngredient);
                 }
             }
 
@@ -157,9 +155,8 @@ namespace ItemWeightCustomizer
                     var newWeight = FindWeightCategory("scrolls", scroll.EditorID) ?? scrollWeight;
                     if (newWeight < 0) continue;
                     if (Math.Abs(scroll.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedScroll = scroll.DeepCopy();
+                    var modifiedScroll = state.PatchMod.Scrolls.GetOrAddAsOverride(scroll);
                     modifiedScroll.Weight = newWeight;
-                    state.PatchMod.Scrolls.Add(modifiedScroll);
                 }
             }
 
@@ -171,9 +168,8 @@ namespace ItemWeightCustomizer
                     var newWeight = FindWeightCategory("soulgems", soulGem.EditorID) ?? soulGemWeight;
                     if (newWeight < 0) continue;
                     if (Math.Abs(soulGem.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedSoulGem = soulGem.DeepCopy();
+                    var modifiedSoulGem = state.PatchMod.SoulGems.GetOrAddAsOverride(soulGem);
                     modifiedSoulGem.Weight = newWeight;
-                    state.PatchMod.SoulGems.Add(modifiedSoulGem);
                 }
             }
 
@@ -184,9 +180,8 @@ namespace ItemWeightCustomizer
                 {
                     var newWeight = FindWeightCategory("armors", armor.EditorID) ?? armorWeight;
                     if (Math.Abs(armor.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedArmor = armor.DeepCopy();
+                    var modifiedArmor = state.PatchMod.Armors.GetOrAddAsOverride(armor);
                     modifiedArmor.Weight = newWeight;
-                    state.PatchMod.Armors.Add(modifiedArmor);
                 }
             }
 
@@ -226,9 +221,8 @@ namespace ItemWeightCustomizer
 
                     if (newWeight < 0) continue;
                     if (Math.Abs(ingestible.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedIngestible = ingestible.DeepCopy();
+                    var modifiedIngestible = state.PatchMod.Ingestibles.GetOrAddAsOverride(ingestible);
                     modifiedIngestible.Weight = newWeight;
-                    state.PatchMod.Ingestibles.Add(modifiedIngestible);
                 }
             }
 
@@ -271,9 +265,8 @@ namespace ItemWeightCustomizer
 
                     if (newWeight < 0) continue;
                     if (Math.Abs(item.Weight - newWeight) < float.Epsilon) continue;
-                    var modifiedItem = item.DeepCopy();
+                    var modifiedItem = state.PatchMod.MiscItems.GetOrAddAsOverride(item);
                     modifiedItem.Weight = newWeight;
-                    state.PatchMod.MiscItems.Add(modifiedItem);
                 }
             }
             
