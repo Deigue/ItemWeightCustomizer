@@ -5,11 +5,11 @@
 Based on the ItemWeightCustomizer (https://github.com/Deigue/ItemWeightCustomizer) Synthesis Patcher and the True Realistic Item Weights SSEEdit patcher (https://www.nexusmods.com/skyrimspecialedition/mods/11496?). To set multipliers for the weights of items according to categories based of TRIW.
 
 Changes from the original IWC Patcher:
-1-More categories to classify.
-2-Settings are accessible through the settings tab of the Synthesis Program.
-3-Rather than a fixed number, the weight to set is calculated by multiplying the original weight by the number set for the category at the "Weight Settings" section of the settings tab.
+	1-More categories to classify.
+	2-Settings are accessible through the settings tab of the Synthesis Program.
+	3-Rather than a fixed number, the weight to set is calculated by multiplying the original weight by the number set for the category at the "Weight Settings" section of 	the settings tab.
 
-Formula: new Weight = weight * weight settings
+Formula: new weight = weight * weight settings
 
 
 
