@@ -1,17 +1,11 @@
-# Item Weight Customizer Redux
+# Item Weight Customizer
 
 ## Summary
 
-Based on the ItemWeightCustomizer (https://github.com/Deigue/ItemWeightCustomizer) Synthesis Patcher and the True Realistic Item Weights SSEEdit patcher (https://www.nexusmods.com/skyrimspecialedition/mods/11496?). To set multipliers for the weights of items according to categories based of TRIW.
-
-Changes from the original IWC Patcher:
-	1-More categories to classify.
-	2-Settings are accessible through the settings tab of the Synthesis Program.
-	3-Rather than a fixed number, the weight to set is calculated by multiplying the original weight by the number set for the category at the "Weight Settings" section of 	the settings tab.
+Allows to customize weights of different items by Record type and Custom categories.
+Also incorporates True Realistic Item Weights SSEEdit patcher (https://www.nexusmods.com/skyrimspecialedition/mods/11496?), to set multipliers for the weights of items according to categories based of TRIW. (added by profaneblood)
 
 Formula: new weight = weight * weight settings
-
-
 
 ---
 
@@ -64,4 +58,11 @@ The weights can be configured on the Settings tab. The available categories are 
 ---
 
 ## Change Log
-- Initial Release
+- Released an early version that supports setting Custom Book Weight.
+- Added Armours and Weapons weight configurability.
+- Added custom category support based on Editor Ids for all the existing record types.
+- Added Foods and Potions weight configurability.
+- Added several variation of Miscellaneous Items.
+- More categories to classify.
+- Settings are accessible through the settings tab of the Synthesis Program.
+- Rather than a fixed number, the weight to set is calculated by multiplying the original weight by the number set for the category at the "Weight Settings" section of 	the settings tab.
