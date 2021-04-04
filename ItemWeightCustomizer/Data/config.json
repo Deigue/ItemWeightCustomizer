@@ -1,23 +1,7 @@
 {
-  "weightSettings": {
-    "books": 0,
-    "ingredients": 0,
-    "scrolls": 0,
-    "soulgems": 0,
-    "armors": -1,
-    "weapons": -1,
-    "foods": 0,
-    "potions": 0,
-    "ingots": 0,
-    "gems": 0,
-    "animalParts": 0,
-    "animalHides": 0,
-    "clutter": 0,
-    "miscItems": 0
-  },
   "categories": [
     {
-      "name" : "tools",
+      "name": "tools",
       "types": [
         "weapons"
       ],
@@ -31,7 +15,43 @@
         "dunHaltedStreamPoachersAxe",
         "dunHaltedStreamPoachersAxeREPLICA"
       ],
-      "weight": 0
+      "weight": -1
     }
-  ]
+  ],
+  "weightSettings": {
+    "books": 1.5,
+    "notes": 0.5,
+    "ingredients": -1,
+    "scrolls": 0.25,
+    "soulgems": -1,
+    "armors": -1,
+    "lightCuirasses": 2,
+    "lightOthers": -1,
+    "clothesBody": 2,
+    "clothesFeet": 2,
+    "clothingCirclets": 0.5,
+    "jewels": 0.1,
+    "weapons": 0.33,
+    "winesBrandys": 3,
+    "alesMeads": 1.25,
+    "breadsflours": 2,
+    "vegetables": 1.5,
+    "soups": 2,
+    "meats": -1,
+    "seafoods": -1,
+    "drinks": 2,
+    "foods": -1,
+    "potions": -1,
+    "ingots": -1,
+    "gems": 0.1,
+    "tools": -1,
+    "tents": 2,
+    "silverware": -1,
+    "empty bottles": 1,
+    "animalPelts": 7.5,
+    "animalParts": -1,
+    "animalHides": 7.5,
+    "clutter": -1,
+    "miscItems": -1
+  }
 }
